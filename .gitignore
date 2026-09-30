@@ -10,7 +10,14 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+.next
+next-env.d.ts
 *.local
+.env*.local
+
+# Uploaded images (kept out of git, folder itself is kept)
+uploads/*
+!uploads/.gitkeep
 
 # Editor directories and files
 .vscode/*

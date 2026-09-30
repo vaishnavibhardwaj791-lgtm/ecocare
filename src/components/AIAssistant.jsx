@@ -1,5 +1,7 @@
+'use client'
+
 import { Bot, Send, X } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 const QUICK = [
   'Which bin should I put this waste in?',
@@ -39,33 +41,30 @@ export default function AIAssistant() {
     setInput('')
   }
 
-  const panel = useMemo(() => {
-    if (!open) return null
-    return (
-      <div className="ai-panel">
-        <div className="ai-head">
-          <strong>AI Waste Assistant</strong>
-          <button className="btn btn-sm" style={{ background: 'transparent', color: 'white' }} onClick={() => setOpen(false)}>
-            <X size={16} />
-          </button>
-        </div>
-        <div className="ai-body">
-          {messages.map((m, i) => (
-            <div key={i} className={`msg ${m.role}`}>{m.text}</div>
-          ))}
-          <div className="row" style={{ marginTop: 4 }}>
-            {QUICK.map((q) => (
-              <button key={q} className="quick-q" onClick={() => send(q)}>{q}</button>
-            ))}
-          </div>
-        </div>
-        <form className="ai-foot" onSubmit={(e) => { e.preventDefault(); send() }}>
-          <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask about waste..." />
-          <button className="btn btn-primary btn-sm" type="submit"><Send size={14} /></button>
-        </form>
+  const panel = open && (
+    <div className="ai-panel">
+      <div className="ai-head">
+        <strong>AI Waste Assistant</strong>
+        <button className="btn btn-sm" style={{ background: 'transparent', color: 'white' }} onClick={() => setOpen(false)}>
+          <X size={16} />
+        </button>
       </div>
-    )
-  }, [open, input, messages])
+      <div className="ai-body">
+        {messages.map((m, i) => (
+          <div key={i} className={`msg ${m.role}`}>{m.text}</div>
+        ))}
+        <div className="row" style={{ marginTop: 4 }}>
+          {QUICK.map((q) => (
+            <button key={q} className="quick-q" onClick={() => send(q)}>{q}</button>
+          ))}
+        </div>
+      </div>
+      <form className="ai-foot" onSubmit={(e) => { e.preventDefault(); send() }}>
+        <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask about waste..." />
+        <button className="btn btn-primary btn-sm" type="submit"><Send size={14} /></button>
+      </form>
+    </div>
+  )
 
   return (
     <>

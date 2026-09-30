@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Bell,
   Building2,
@@ -12,9 +14,10 @@ import {
   BarChart3,
   X,
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useApp } from '../context/AppContext'
+import { useApp } from '@/context/AppContext'
+import NavLink from './NavLink'
 
 const links = [
   { to: '/admin', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -27,9 +30,9 @@ const links = [
   { to: '/admin/settings', label: 'Settings', icon: Settings },
 ]
 
-export default function AdminLayout() {
+export default function AdminLayout({ children }) {
   const { user, logout } = useApp()
-  const navigate = useNavigate()
+  const router = useRouter()
   const [open, setOpen] = useState(false)
 
   return (
@@ -37,12 +40,12 @@ export default function AdminLayout() {
       <aside className={`sidebar ${open ? 'open' : ''}`}>
         <div className="logo"><Recycle size={22} /> EcoWaste Admin</div>
         {links.map(({ to, label, icon: Icon, end }) => (
-          <NavLink key={to} to={to} end={end} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} onClick={() => setOpen(false)}>
+          <NavLink key={to} href={to} end={end} className="nav-link" onClick={() => setOpen(false)}>
             <Icon size={18} /> {label}
           </NavLink>
         ))}
         <div className="sidebar-footer">
-          <button className="nav-link" style={{ width: '100%', background: 'transparent', border: 0, cursor: 'pointer' }} onClick={() => { logout(); navigate('/') }}>
+          <button className="nav-link" style={{ width: '100%', background: 'transparent', border: 0, cursor: 'pointer' }} onClick={async () => { await logout(); router.replace('/') }}>
             <LogOut size={18} /> Logout
           </button>
         </div>
@@ -60,9 +63,10 @@ export default function AdminLayout() {
           </div>
         </header>
         <div className="content page-fade">
-          <Outlet />
+          {children}
         </div>
       </div>
+      {open && <div className="overlay" style={{ background: 'rgba(16,32,24,0.25)', zIndex: 25 }} onClick={() => setOpen(false)} />}
     </div>
   )
 }

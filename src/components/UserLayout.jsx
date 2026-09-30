@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Bell,
   BookOpen,
@@ -11,10 +13,11 @@ import {
   UserRound,
   X,
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useApp } from '../context/AppContext'
+import { useApp } from '@/context/AppContext'
 import AIAssistant from './AIAssistant'
+import NavLink from './NavLink'
 
 const links = [
   { to: '/app', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -27,22 +30,23 @@ const links = [
   { to: '/app/profile', label: 'Profile', icon: UserRound },
 ]
 
-export default function UserLayout() {
-  const { user, logout } = useApp()
-  const navigate = useNavigate()
+export default function UserLayout({ children }) {
+  const { user, logout, notifications } = useApp()
+  const router = useRouter()
   const [open, setOpen] = useState(false)
+  const unread = notifications.filter((n) => n.unread).length
 
   return (
     <div className="shell">
       <aside className={`sidebar ${open ? 'open' : ''}`}>
         <div className="logo"><Recycle size={22} /> EcoWaste</div>
         {links.map(({ to, label, icon: Icon, end }) => (
-          <NavLink key={to} to={to} end={end} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`} onClick={() => setOpen(false)}>
+          <NavLink key={to} href={to} end={end} className="nav-link" onClick={() => setOpen(false)}>
             <Icon size={18} /> {label}
           </NavLink>
         ))}
         <div className="sidebar-footer">
-          <button className="nav-link" style={{ width: '100%', background: 'transparent', border: 0, cursor: 'pointer' }} onClick={() => { logout(); navigate('/') }}>
+          <button className="nav-link" style={{ width: '100%', background: 'transparent', border: 0, cursor: 'pointer' }} onClick={async () => { await logout(); router.replace('/') }}>
             <LogOut size={18} /> Logout
           </button>
         </div>
@@ -59,11 +63,13 @@ export default function UserLayout() {
             </div>
           </div>
           <div className="row">
-            <NavLink to="/app/notifications" className="btn btn-secondary btn-sm"><Bell size={16} /></NavLink>
+            <NavLink href="/app/notifications" className="btn btn-secondary btn-sm">
+              <Bell size={16} />{unread > 0 && <span>{unread}</span>}
+            </NavLink>
           </div>
         </header>
         <div className="content page-fade">
-          <Outlet />
+          {children}
         </div>
       </div>
       {open && <div className="overlay" style={{ background: 'rgba(16,32,24,0.25)', zIndex: 25 }} onClick={() => setOpen(false)} />}
