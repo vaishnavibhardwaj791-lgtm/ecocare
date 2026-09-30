@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "oxlint",
-    "seed": "node --env-file=.env.local scripts/seed.mjs"
+    "seed": "node --env-file-if-exists=.env.local scripts/seed.mjs"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

@@ -1,20 +1,17 @@
 // Seeds MongoDB with demo users, complaints, pickups, centers and notifications.
-// Usage: npm run seed   (reads MONGODB_URI from .env.local)
+// Usage: npm run seed   (MONGODB_URI from .env.local if present, else the fallback in src/lib/config.js)
 // WARNING: clears the EcoWaste collections before inserting.
 import bcrypt from 'bcryptjs'
 import mongoose from 'mongoose'
 import Center from '../src/models/Center.js'
 import Complaint from '../src/models/Complaint.js'
 import Counter from '../src/models/Counter.js'
+import Image from '../src/models/Image.js'
 import Notification from '../src/models/Notification.js'
 import Pickup from '../src/models/Pickup.js'
 import User from '../src/models/User.js'
+import { MONGODB_URI as uri } from '../src/lib/config.js'
 
-const uri = process.env.MONGODB_URI
-if (!uri) {
-  console.error('MONGODB_URI is not set. Create .env.local (see .env.example).')
-  process.exit(1)
-}
 
 // ---------- Demo accounts (plain passwords are only here; the DB stores bcrypt hashes) ----------
 const USERS = [
@@ -131,7 +128,7 @@ async function main() {
   await mongoose.connect(uri)
   console.log(`Connected to ${mongoose.connection.name}`)
 
-  await Promise.all([User, Complaint, Pickup, Center, Notification, Counter].map((M) => M.deleteMany({})))
+  await Promise.all([User, Complaint, Pickup, Center, Notification, Counter, Image].map((M) => M.deleteMany({})))
   await Promise.all([User, Complaint, Pickup, Center].map((M) => M.syncIndexes()))
 
   const users = await User.insertMany(

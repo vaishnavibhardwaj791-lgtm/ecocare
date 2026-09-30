@@ -5,7 +5,8 @@ Next.js (App Router) full-stack app for citizens to report waste issues, request
 - **Frontend + backend:** Next.js 16 (pages in `src/app`, REST API in `src/app/api`)
 - **Database:** MongoDB via Mongoose (`src/models`)
 - **Auth:** passwords hashed with **bcrypt**; login issues a signed **JWT** stored in an httpOnly cookie
-- **Image uploads:** saved by the backend into the `uploads/` folder and served from `/api/uploads/<file>`
+- **Image uploads:** stored in MongoDB (`images` collection) and served from `/api/uploads/<file>`, so they work on Vercel
+- **Config:** `MONGODB_URI` / `JWT_SECRET` come from env vars when set, otherwise from the hardcoded fallbacks in `src/lib/config.js`
 
 ## Setup
 
@@ -39,7 +40,6 @@ On the login page pick the matching **Citizen / Admin** toggle. New users can al
 
 ```
 scripts/seed.mjs          demo data + dummy users (bcrypt-hashed)
-uploads/                  uploaded complaint photos (git-ignored)
 src/app/                  pages: / , /login , /app/* (citizen), /admin/*
 src/app/api/              auth, complaints, pickups, centers, users, notifications, analytics, uploads
 src/lib/                  db connection, JWT auth helpers, upload helper, constants

@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+import { JWT_SECRET } from './config'
 import { connectDB } from './db'
 import User from '@/models/User'
 
@@ -8,9 +9,7 @@ export const TOKEN_COOKIE = 'ecowaste_token'
 const MAX_AGE = 60 * 60 * 24 * 7 // 7 days
 
 function secret() {
-  const s = process.env.JWT_SECRET
-  if (!s) throw new Error('JWT_SECRET is not set. Add it to .env.local')
-  return s
+  return JWT_SECRET
 }
 
 export function signToken(user) {
